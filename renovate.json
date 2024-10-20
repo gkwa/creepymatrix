@@ -9,7 +9,9 @@
   "packageRules": [
     {
       "matchDepTypes": ["*"],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     }
-  ]
+  ],
+  "platformAutomerge": true
 }

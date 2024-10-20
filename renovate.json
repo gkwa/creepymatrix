@@ -13,5 +13,6 @@
       "automergeType": "branch",
       "requiredStatusChecks": null
     }
-  ]
+  ],
+  "platformAutomerge": true
 }

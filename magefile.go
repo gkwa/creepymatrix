@@ -212,12 +212,18 @@ func Clean() error {
 }
 
 func ldflags() string {
-	return fmt.Sprintf(`-s -w -X '%s.Version=%s' -X '%s.Date=%s' -X '%s.GoVersion=%s' -X '%s.ShortGitSHA=%s' -X '%s.FullGitSHA=%s'`,
-		ldFlagsPrefix, version,
-		ldFlagsPrefix, date,
-		ldFlagsPrefix, goVersion,
-		ldFlagsPrefix, shortGitSHA,
-		ldFlagsPrefix, fullGitSHA,
+	return fmt.Sprintf(
+		`-s -w -X '%s.Version=%s' -X '%s.Date=%s' -X '%s.GoVersion=%s' -X '%s.ShortGitSHA=%s' -X '%s.FullGitSHA=%s'`,
+		ldFlagsPrefix,
+		version,
+		ldFlagsPrefix,
+		date,
+		ldFlagsPrefix,
+		goVersion,
+		ldFlagsPrefix,
+		shortGitSHA,
+		ldFlagsPrefix,
+		fullGitSHA,
 	)
 }
 

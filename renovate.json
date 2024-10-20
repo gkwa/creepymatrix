@@ -9,7 +9,8 @@
   "packageRules": [
     {
       "matchDepTypes": ["*"],
-      "automerge": true
+      "automerge": true,
+      "requiredStatusChecks": null
     }
   ]
 }

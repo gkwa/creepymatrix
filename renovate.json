@@ -10,7 +10,6 @@
     {
       "matchDepTypes": ["*"],
       "automerge": true,
-      "automergeType": "branch",
       "requiredStatusChecks": null
     }
   ]

@@ -10,7 +10,9 @@
     {
       "matchDepTypes": ["*"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "branch",
+      "automergeStrategy": "fast-forward",
+      "requiredStatusChecks": null
     }
   ],
   "platformAutomerge": true

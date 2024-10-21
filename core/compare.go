@@ -89,4 +89,3 @@ func (fc *FileComparer) shouldIgnore(path string) bool {
 	}
 	return false
 }
-

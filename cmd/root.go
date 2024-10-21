@@ -55,7 +55,7 @@ func init() {
 	rootCmd.Flags().StringVar(&sourceDir, "source", "", "Source project directory")
 	rootCmd.Flags().StringVar(&targetDir, "target", "", "Target project directory")
 	rootCmd.Flags().
-		StringVar(&outputFile, "output", "compare_files.sh", "Output bash script file (use '-' for stdout)")
+		StringVar(&outputFile, "output", "-", "Output bash script file (use '-' for stdout)")
 	rootCmd.Flags().StringArrayVar(&ignorePatterns, "ignore", []string{
 		".git/",
 		".nearwait.",

@@ -1,14 +1,11 @@
 package core
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 )
-
-var ErrNoMatchingFiles = errors.New("no matching files found for comparison")
 
 type FileComparer struct {
 	SourceDir      string
@@ -31,7 +28,6 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 	}
 
 	commands := []string{"#!/usr/bin/env bash\n"}
-	matchingFiles := false
 
 	for _, sourceFile := range sourceFiles {
 		relPath, err := filepath.Rel(fc.SourceDir, sourceFile)
@@ -47,7 +43,6 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 
 		if fc.fileExists(targetFile) {
 			// Convert both sourceFile and targetFile to absolute paths
-			matchingFiles = true
 			absSourceFile, err := filepath.Abs(sourceFile)
 			if err != nil {
 				return err
@@ -60,10 +55,6 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 			command := fmt.Sprintf("diff --unified --ignore-all-space %q %q", absSourceFile, absTargetFile)
 			commands = append(commands, command)
 		}
-	}
-
-	if !matchingFiles {
-		return ErrNoMatchingFiles
 	}
 
 	script := strings.Join(commands, "\n")

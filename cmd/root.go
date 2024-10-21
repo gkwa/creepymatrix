@@ -44,6 +44,10 @@ var rootCmd = &cobra.Command{
 		comparer := core.NewFileComparer(sourceDir, targetDir, ignorePatterns)
 		err := comparer.GenerateComparisonScript(outputFile)
 		if err != nil {
+			if err == core.ErrNoMatchingFiles {
+				fmt.Fprintln(os.Stderr, "No matching files found for comparison.")
+				return nil
+			}
 			return fmt.Errorf("error generating comparison script: %v", err)
 		}
 

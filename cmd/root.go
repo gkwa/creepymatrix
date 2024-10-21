@@ -74,6 +74,8 @@ func init() {
 	rootCmd.Flags().StringArrayVar(&ignorePatterns, "ignore", []string{
 		".git",
 		"go.mod",
+		".timestamps/",
+		".nearwait.",
 		"go.sum",
 		"make_txtar.sh",
 		"node_modules",

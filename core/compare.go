@@ -27,7 +27,7 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 		return err
 	}
 
-	commands := []string{"#!/usr/bin/env/bash\n\n"}
+	commands := []string{"#!/usr/bin/env/bash\n"}
 
 	for _, sourceFile := range sourceFiles {
 		relPath, err := filepath.Rel(fc.SourceDir, sourceFile)
@@ -40,13 +40,25 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 		}
 
 		targetFile := filepath.Join(fc.TargetDir, relPath)
+
 		if fc.fileExists(targetFile) {
-			command := fmt.Sprintf("diff --unified --ignore-all-space %s %s", sourceFile, targetFile)
+			// Convert both sourceFile and targetFile to absolute paths
+			absSourceFile, err := filepath.Abs(sourceFile)
+			if err != nil {
+				return err
+			}
+			absTargetFile, err := filepath.Abs(targetFile)
+			if err != nil {
+				return err
+			}
+
+			command := fmt.Sprintf("diff --unified --ignore-all-space %q %q", absSourceFile, absTargetFile)
 			commands = append(commands, command)
 		}
 	}
 
 	script := strings.Join(commands, "\n")
+	script+="\n"
 	return os.WriteFile(outputFile, []byte(script), 0o755)
 }
 

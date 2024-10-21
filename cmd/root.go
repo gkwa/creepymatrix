@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -29,26 +28,11 @@ var rootCmd = &cobra.Command{
 	Short: "A brief description of your application",
 	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if cliLogger.IsZero() {
-			cliLogger = logger.NewConsoleLogger(verbose, logFormat == "json")
-		}
-
-		ctx := logr.NewContext(context.Background(), cliLogger)
-		cmd.SetContext(ctx)
+		cliLogger = logger.NewConsoleLogger(verbose, logFormat == "json")
+		cmd.SetContext(logr.NewContext(cmd.Context(), cliLogger))
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if sourceDir == "" || targetDir == "" {
-			return fmt.Errorf("please provide both source and target directories")
-		}
-
-		comparer := core.NewFileComparer(sourceDir, targetDir, ignorePatterns)
-		err := comparer.GenerateComparisonScript(outputFile)
-		if err != nil {
-			return fmt.Errorf("error generating comparison script: %v", err)
-		}
-
-		fmt.Printf("Comparison script generated: %s\n", outputFile)
-		return nil
+		return core.RunComparison(cmd.Context(), sourceDir, targetDir, outputFile, ignorePatterns)
 	},
 }
 
@@ -70,24 +54,25 @@ func init() {
 
 	rootCmd.Flags().StringVar(&sourceDir, "source", "", "Source project directory")
 	rootCmd.Flags().StringVar(&targetDir, "target", "", "Target project directory")
-	rootCmd.Flags().StringVar(&outputFile, "output", "compare_files.sh", "Output bash script file")
+	rootCmd.Flags().
+		StringVar(&outputFile, "output", "compare_files.sh", "Output bash script file (use '-' for stdout)")
 	rootCmd.Flags().StringArrayVar(&ignorePatterns, "ignore", []string{
 		".git/",
-		"go.mod",
-		".timestamps/",
 		".nearwait.",
+		".timestamps/",
+		"go.mod",
 		"go.sum",
 		"make_txtar.sh",
 		"node_modules",
 		"README.md",
 	}, "Patterns to ignore (can be used multiple times)")
 
-	if err := viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose")); err != nil {
-		fmt.Printf("Error binding verbose flag: %v\n", err)
+	if err := viper.BindPFlags(rootCmd.PersistentFlags()); err != nil {
+		fmt.Printf("Error binding persistent flags: %v\n", err)
 		os.Exit(1)
 	}
-	if err := viper.BindPFlag("log-format", rootCmd.PersistentFlags().Lookup("log-format")); err != nil {
-		fmt.Printf("Error binding log-format flag: %v\n", err)
+	if err := viper.BindPFlags(rootCmd.Flags()); err != nil {
+		fmt.Printf("Error binding flags: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -109,20 +94,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
-
-	logFormat = viper.GetString("log-format")
-	verbose = viper.GetInt("verbose")
-}
-
-func LoggerFrom(ctx context.Context, keysAndValues ...interface{}) logr.Logger {
-	if cliLogger.IsZero() {
-		cliLogger = logger.NewConsoleLogger(verbose, logFormat == "json")
-	}
-	newLogger := cliLogger
-	if ctx != nil {
-		if l, err := logr.FromContext(ctx); err == nil {
-			newLogger = l
-		}
-	}
-	return newLogger.WithValues(keysAndValues...)
 }

@@ -72,7 +72,7 @@ func init() {
 	rootCmd.Flags().StringVar(&targetDir, "target", "", "Target project directory")
 	rootCmd.Flags().StringVar(&outputFile, "output", "compare_files.sh", "Output bash script file")
 	rootCmd.Flags().StringArrayVar(&ignorePatterns, "ignore", []string{
-		".git",
+		".git/",
 		"go.mod",
 		".timestamps/",
 		".nearwait.",

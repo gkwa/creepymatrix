@@ -27,7 +27,7 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 		return err
 	}
 
-	commands := []string{"#!/usr/bin/env/bash\n"}
+	commands := []string{"#!/usr/bin/env bash\n"}
 
 	for _, sourceFile := range sourceFiles {
 		relPath, err := filepath.Rel(fc.SourceDir, sourceFile)
@@ -58,7 +58,7 @@ func (fc *FileComparer) GenerateComparisonScript(outputFile string) error {
 	}
 
 	script := strings.Join(commands, "\n")
-	script+="\n"
+	script += "\n"
 	return os.WriteFile(outputFile, []byte(script), 0o755)
 }
 
@@ -89,3 +89,4 @@ func (fc *FileComparer) shouldIgnore(path string) bool {
 	}
 	return false
 }
+

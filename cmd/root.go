@@ -62,6 +62,7 @@ func init() {
 		".timestamps/",
 		"go.mod",
 		"go.sum",
+		".gitignore",
 		"make_txtar.sh",
 		"node_modules",
 		"README.md",
